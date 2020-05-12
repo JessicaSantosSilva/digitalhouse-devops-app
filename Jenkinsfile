@@ -71,7 +71,7 @@ pipeline {
                     steps {
                         echo 'Push latest para AWS ECR'
                         script {
-                            docker.withRegistry('https://733036961943.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-ecr-access') {
+                            docker.withRegistry('https://777546452717.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:awsecr') {
                                 docker.image('digitalhouse-devops-app').push()
                             }
                         }
@@ -91,7 +91,7 @@ pipeline {
                 script {
                     if(env.GIT_BRANCH=='origin/master'){
  
-                        docker.withRegistry('https://733036961943.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-ecr-access') {
+                        docker.withRegistry('https://777546452717.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:awsecr') {
                             docker.image('digitalhouse-devops-app').pull()
                         }
 
@@ -101,7 +101,7 @@ pipeline {
                             sh "docker stop app_homolog"
                             sh "docker rm app_homolog"
                         }
-                        sh "docker run -d --env NODE_ENV=homolog --env BUCKET_NAME=digitalhouse-devopers-homolog --name app_homolog -p 3000:3000 733036961943.dkr.ecr.us-east-1.amazonaws.com/digitalhouse-devops-app:latest"
+                        sh "docker run -d --env NODE_ENV=homolog --env BUCKET_NAME=dh-pi-devops-dev-jessica --name app_homolog -p 3000:3000 777546452717.dkr.ecr.us-east-1.amazonaws.com/digitalhouse-devops-app:latest"
                         sh "docker ps"
                         sh 'sleep 10'
                         sh 'curl http://127.0.0.1:3000/api/v1/healthcheck'
@@ -115,7 +115,7 @@ pipeline {
         stage('Deploy to Producao') {
             agent {  
                 node {
-                    label 'producao'
+                    label 'prod'
                 }
             }
 
@@ -123,7 +123,7 @@ pipeline {
                 script {
                     if(env.GIT_BRANCH=='origin/master'){
 
-                        docker.withRegistry('https://733036961943.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-ecr-access') {
+                        docker.withRegistry('https://777546452717.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:awsecr') {
                             docker.image('digitalhouse-devops-app').pull()
                         }
 
@@ -133,7 +133,7 @@ pipeline {
                             sh "docker stop app_prod"
                             sh "docker rm app_prod"
                         }
-                        sh "docker run -d --env NODE_ENV=producao --env BUCKET_NAME=digitalhouse-devopers-producao --name app_prod -p 80:3000 733036961943.dkr.ecr.us-east-1.amazonaws.com/digitalhouse-devops-app:latest"
+                        sh "docker run -d --env NODE_ENV=producao --env BUCKET_NAME=dh-pi-devops-prod-jessica --name app_prod -p 80:3000 777546452717.dkr.ecr.us-east-1.amazonaws.com/digitalhouse-devops-app:latest"
                         sh "docker ps"
                         sh 'sleep 10'
                         sh 'curl http://127.0.0.1:80/api/v1/healthcheck'
@@ -145,4 +145,4 @@ pipeline {
         }
 
     }
-}
+}                  
